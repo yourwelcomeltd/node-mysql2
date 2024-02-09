@@ -23,7 +23,8 @@ const server = common.createServer(
       // different host provided via MYSQL_HOST that identifies a real MySQL
       // server instance.
       host: 'localhost',
-      port: server._port
+      port: server._port,
+      ssl: false
     });
     connection.query('SELECT 123', (err, _rows, _fields) => {
       if (err) {
@@ -61,6 +62,7 @@ const server = common.createServer(
             characterSet: 63,
             columnLength: 1,
             columnType: 8,
+            type: 8,
             flags: 129,
             decimals: 0
           }

@@ -1,22 +1,22 @@
 'use strict';
 
+const assert = require('assert');
 const common = require('../../common');
 const connection = common.createConnection();
-const assert = require('assert');
 
-let rows = undefined;
-let fields = undefined;
-connection.query('SELECT 1', (err, _rows, _fields) => {
-  if (err) {
-    throw err;
-  }
+connection.query('SELECT 1 as result', (err, rows, fields) => {
+  assert.ifError(err);
+  assert.deepEqual(rows, [{ result: 1 }]);
+  assert.equal(fields[0].name, 'result');
 
-  rows = _rows;
-  fields = _fields;
-  connection.end();
-});
+  connection.execute('SELECT 1 as result', (err, rows, fields) => {
+    assert.ifError(err);
+    assert.deepEqual(rows, [{ result: 1 }]);
+    assert.equal(fields[0].name, 'result');
 
-process.on('exit', () => {
-  assert.deepEqual(rows, [{ 1: 1 }]);
-  assert.equal(fields[0].name, '1');
+    connection.end(err => {
+      assert.ifError(err);
+      process.exit(0);
+    });
+  });
 });
