@@ -70,11 +70,7 @@ connection.execute('SELECT * FROM announcements', async (err, _rows) => {
   }
   const s4 = connection.query('SELECT * FROM announcements').stream();
   for await (const row of s4) {
-<<<<<<< HEAD:test/integration/connection/test-stream.js
-    await new Promise(resolve => setTimeout(resolve, 1000));
-=======
     await new Promise((resolve) => setTimeout(resolve, 1000));
->>>>>>> remotes/upstream/master:test/integration/connection/test-stream.test.cjs
     rows4.push(row);
   }
 });
