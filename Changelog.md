@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.12.0](https://github.com/yourwelcomeltd/node-mysql2/compare/v3.11.0...v3.12.0) (2024-08-06)
+
+
+### Features
+
+* add conn-level `infileStreamFactory` option ([#2159](https://github.com/yourwelcomeltd/node-mysql2/issues/2159)) ([5bed0f8](https://github.com/yourwelcomeltd/node-mysql2/commit/5bed0f8f195f615844d5dbe322ebfe47b76ba2f5))
+* add jsonStrings option ([#2642](https://github.com/yourwelcomeltd/node-mysql2/issues/2642)) ([9820fe5](https://github.com/yourwelcomeltd/node-mysql2/commit/9820fe51b48cadd48024956e62d9fceac2e5a880))
+* **docs:** release documentation website ([#2339](https://github.com/yourwelcomeltd/node-mysql2/issues/2339)) ([c0d77c0](https://github.com/yourwelcomeltd/node-mysql2/commit/c0d77c02d2f4ad22b46a712d270fc2654d26de4e))
+* fully support VECTOR type results ([9576742](https://github.com/yourwelcomeltd/node-mysql2/commit/9576742f56f234ac50bfd099bc84c8f593971e74))
+* introduce typeCast for `execute` method ([#2398](https://github.com/yourwelcomeltd/node-mysql2/issues/2398)) ([baaa92a](https://github.com/yourwelcomeltd/node-mysql2/commit/baaa92a228d32012f7da07826674f7a736e3791d))
+* **perf:** cache iconv decoder ([#2391](https://github.com/yourwelcomeltd/node-mysql2/issues/2391)) ([b95b3db](https://github.com/yourwelcomeltd/node-mysql2/commit/b95b3dbe4bb34e36d0d1be6948e4d8a169d28eed))
+
+
+### Bug Fixes
+
+* add condition which allows code in callback to be reachable ([#2376](https://github.com/yourwelcomeltd/node-mysql2/issues/2376)) ([8d5b903](https://github.com/yourwelcomeltd/node-mysql2/commit/8d5b903f5c24ef6378d4aa98d3fd4e13d39be4db))
+* add decodeuricomponent to parse uri encoded special characters in host, username, password and datbase keys ([#2277](https://github.com/yourwelcomeltd/node-mysql2/issues/2277)) ([fe573ad](https://github.com/yourwelcomeltd/node-mysql2/commit/fe573addffa64a842ae37994fcd8879cefa933f2))
+* binary parser sometimes reads out of packet bounds when results contain null and typecast is false ([#2601](https://github.com/yourwelcomeltd/node-mysql2/issues/2601)) ([705835d](https://github.com/yourwelcomeltd/node-mysql2/commit/705835d06ff437cf0bf3169dac0a5f68002c4f87))
+* **cache:** improve cache key serialization ([#2424](https://github.com/yourwelcomeltd/node-mysql2/issues/2424)) ([0d54b0c](https://github.com/yourwelcomeltd/node-mysql2/commit/0d54b0ca6498c823098426038162ef10df02c818))
+* **connection config:** remove keepAliveInitialDelay default value ([#2712](https://github.com/yourwelcomeltd/node-mysql2/issues/2712)) ([688ebab](https://github.com/yourwelcomeltd/node-mysql2/commit/688ebab84961ae82863f811fa772cfd26fbadc0e))
+* correctly pass values when used with sql-template-strings library ([#2266](https://github.com/yourwelcomeltd/node-mysql2/issues/2266)) ([6444f99](https://github.com/yourwelcomeltd/node-mysql2/commit/6444f9953ddb08b1b98cd0d7eb0d939d25d3971a))
+* **docs:** improve the contribution guidelines ([#2552](https://github.com/yourwelcomeltd/node-mysql2/issues/2552)) ([8a818ce](https://github.com/yourwelcomeltd/node-mysql2/commit/8a818ce0f30654eba854759e6409c0ac856fc448))
+* EventEmitter on method signatures to use spread syntax ([#2200](https://github.com/yourwelcomeltd/node-mysql2/issues/2200)) ([5d21b81](https://github.com/yourwelcomeltd/node-mysql2/commit/5d21b8127b8b6aa4b0308b6482d707d150403990))
+* handshake SSL error with AWS RDS ([#2857](https://github.com/yourwelcomeltd/node-mysql2/issues/2857)) ([de071bb](https://github.com/yourwelcomeltd/node-mysql2/commit/de071bb1d7738693793ff3ea24d5f933f6fa4792))
+* malformed FieldPacket ([#2280](https://github.com/yourwelcomeltd/node-mysql2/issues/2280)) ([8831e09](https://github.com/yourwelcomeltd/node-mysql2/commit/8831e092024f8d26fe9272adec8e1a5f115735aa))
+* move missing options to `ConnectionOptions ` ([#2288](https://github.com/yourwelcomeltd/node-mysql2/issues/2288)) ([5cd7639](https://github.com/yourwelcomeltd/node-mysql2/commit/5cd76396d962da070452800597a6f86829b35bd4))
+* revert breaking change in results creation ([#2591](https://github.com/yourwelcomeltd/node-mysql2/issues/2591)) ([f7c60d0](https://github.com/yourwelcomeltd/node-mysql2/commit/f7c60d01a49666130f51d3847ccfdd3d6e3d33e9))
+* **security:** improve results object creation ([#2574](https://github.com/yourwelcomeltd/node-mysql2/issues/2574)) ([4a964a3](https://github.com/yourwelcomeltd/node-mysql2/commit/4a964a3910a4b8de008696c554ab1b492e9b4691))
+* **security:** improve supportBigNumbers and bigNumberStrings sanitization ([#2572](https://github.com/yourwelcomeltd/node-mysql2/issues/2572)) ([74abf9e](https://github.com/yourwelcomeltd/node-mysql2/commit/74abf9ef94d76114d9a09415e28b496522a94805))
+* **security:** sanitize fields and tables when using nestTables ([#2702](https://github.com/yourwelcomeltd/node-mysql2/issues/2702)) ([efe3db5](https://github.com/yourwelcomeltd/node-mysql2/commit/efe3db527a2c94a63c2d14045baba8dfefe922bc))
+* **security:** sanitize timezone parameter value to prevent code injection ([#2608](https://github.com/yourwelcomeltd/node-mysql2/issues/2608)) ([7d4b098](https://github.com/yourwelcomeltd/node-mysql2/commit/7d4b098c7e29d5a6cb9eac2633bfcc2f0f1db713))
+* setMaxParserCache throws TypeError ([#2757](https://github.com/yourwelcomeltd/node-mysql2/issues/2757)) ([aa8604a](https://github.com/yourwelcomeltd/node-mysql2/commit/aa8604a32b28c2024da006edce30d88ad22d8a06))
+* sql-template-strings/tag compatibility ([#2238](https://github.com/yourwelcomeltd/node-mysql2/issues/2238)) ([f2efe5a](https://github.com/yourwelcomeltd/node-mysql2/commit/f2efe5a2ddf9e10a83bf24da2af744061b2ae597))
+* **stream:** premature close when it is paused ([#2416](https://github.com/yourwelcomeltd/node-mysql2/issues/2416)) ([7c6bc64](https://github.com/yourwelcomeltd/node-mysql2/commit/7c6bc642addb3e6fee1b1fdc84f83a72ff11ca4a))
+* **stream:** premature close when using `for await` ([#2389](https://github.com/yourwelcomeltd/node-mysql2/issues/2389)) ([af47148](https://github.com/yourwelcomeltd/node-mysql2/commit/af4714845603f70e3c1ef635f6c0750ff1987a9e))
+* **stream:** reads should emit the dataset number for each dataset ([#2628](https://github.com/yourwelcomeltd/node-mysql2/issues/2628)) ([4dab4ca](https://github.com/yourwelcomeltd/node-mysql2/commit/4dab4cad2c3b9b165d6118636a179b5443e50442))
+* support deno + caching_sha2_password FULL_AUTHENTICATION_PACKET flow ([#2704](https://github.com/yourwelcomeltd/node-mysql2/issues/2704)) ([2e03694](https://github.com/yourwelcomeltd/node-mysql2/commit/2e0369445ba1581b427f78689a935ac3debfbf07))
+* The removeIdleTimeoutConnectionsTimer did not clean up when the … ([#2384](https://github.com/yourwelcomeltd/node-mysql2/issues/2384)) ([18a44f6](https://github.com/yourwelcomeltd/node-mysql2/commit/18a44f6a0a0b7ef41cc874d7a7bb2d3db83ea533))
+* **typeCast:** ensure the same behavior for `field.string()` with `query` and `execute` ([#2820](https://github.com/yourwelcomeltd/node-mysql2/issues/2820)) ([27e38ea](https://github.com/yourwelcomeltd/node-mysql2/commit/27e38ea3f084f445a8e5a4909341b5e740bdf474))
+* **types:** add missing types to TypeCast ([#2390](https://github.com/yourwelcomeltd/node-mysql2/issues/2390)) ([78ce495](https://github.com/yourwelcomeltd/node-mysql2/commit/78ce4953e9c66d6cf40ffc2d252fa3701a2d4fe2))
+* **types:** expose TypeCast types ([#2425](https://github.com/yourwelcomeltd/node-mysql2/issues/2425)) ([336a7f1](https://github.com/yourwelcomeltd/node-mysql2/commit/336a7f1259c63d2dfe070fe400b141e89255844e))
+* **types:** support encoding for string type cast ([#2407](https://github.com/yourwelcomeltd/node-mysql2/issues/2407)) ([1dc2011](https://github.com/yourwelcomeltd/node-mysql2/commit/1dc201144daceab0b12193ada0f13dbb25e917f6))
+* **typings:** typo from `jonServerPublicKey` to `onServerPublicKey` ([#2699](https://github.com/yourwelcomeltd/node-mysql2/issues/2699)) ([8b5f691](https://github.com/yourwelcomeltd/node-mysql2/commit/8b5f6911b69b766a3732fa160049d263460da74b))
+
 ## [3.11.0](https://github.com/sidorares/node-mysql2/compare/v3.10.3...v3.11.0) (2024-07-27)
 
 
