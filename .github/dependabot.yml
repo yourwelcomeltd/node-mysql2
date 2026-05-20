@@ -1,10 +1,24 @@
 version: 2
 updates:
-  - package-ecosystem: "npm" 
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "npm" 
-    directory: "/website"
+      interval: 'daily'
+    groups:
+      dev-dependencies:
+        dependency-type: 'development'
+  - package-ecosystem: 'npm'
+    directory: '/website'
     schedule:
-      interval: "daily"
+      interval: 'daily'
+    groups:
+      docusaurus:
+        patterns:
+          - '@docusaurus/*'
+          - 'docusaurus-*'
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+      website-dev-dependencies:
+        dependency-type: 'development'

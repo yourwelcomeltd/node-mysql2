@@ -2,6 +2,16 @@ name: CI - Linux
 
 on:
   pull_request:
+    paths:
+      - '.github/workflows/ci-linux.yml'
+      - 'lib/**'
+      - 'test/**'
+      - 'tools/**'
+      - 'index.js'
+      - 'promise.js'
+      - 'poku.config.js'
+      - 'package.json'
+      - 'package-lock.json'
   push:
     branches: [main]
 
@@ -18,31 +28,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        mysql-version: ['mysql:8.0.33']
+        node-version: [18, 20, 22, 24]
+        mysql-version: ['mysql:8.3']
         use-compression: [0, 1]
         use-tls: [0, 1]
         mysql_connection_url_key: ['']
+        # static-parser: [0, 1]  # Already tested in "ci-coverage"
         # TODO - add mariadb to the matrix. currently few tests are broken due to mariadb incompatibilities
+
     env:
       MYSQL_CONNECTION_URL: ${{ secrets[matrix.mysql_connection_url_key] }}
 
     name: Node.js ${{ matrix.node-version }} - DB ${{ matrix.mysql-version }}${{ matrix.mysql_connection_url_key }} - SSL=${{matrix.use-tls}} Compression=${{matrix.use-compression}}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up MySQL
         if: ${{ matrix.mysql-version }}
         run: docker run -d -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} -v $PWD/mysqldata:/var/lib/mysql/ -v $PWD/test/fixtures/custom-conf:/etc/mysql/conf.d -v $PWD/test/fixtures/ssl/certs:/certs -p ${{ env.MYSQL_PORT }}:3306 ${{ matrix.mysql-version }}
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
+          package-manager-cache: false
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: npm-linux-${{ hashFiles('package-lock.json') }}
@@ -56,37 +69,42 @@ jobs:
         run: node tools/wait-up.js
 
       - name: Run tests
-        run: FILTER=${{matrix.filter}} MYSQL_USE_TLS=${{ matrix.use-tls }} MYSQL_USE_COMPRESSION=${{ matrix.use-compression }} npm run test
-        timeout-minutes: 5
+        run: MYSQL_USE_TLS=${{ matrix.use-tls }} MYSQL_USE_COMPRESSION=${{ matrix.use-compression }} npm run test
+        timeout-minutes: 10
 
   tests-linux-bun:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        bun-version: [latest, canary]
-        mysql-version: ['mysql:8.0.33']
+        bun-version: [latest]
+        mysql-version: ['mysql:8.3']
         use-compression: [0, 1]
         use-tls: [0, 1]
+        static-parser: [0, 1]
 
-    name: Bun ${{ matrix.bun-version }} - DB ${{ matrix.mysql-version }} - SSL=${{matrix.use-tls}} Compression=${{matrix.use-compression}}
+    env:
+      STATIC_PARSER: ${{ matrix.static-parser }}
+
+    name: Bun ${{ matrix.bun-version }} - DB ${{ matrix.mysql-version }} - SSL=${{matrix.use-tls}} Compression=${{matrix.use-compression}} Static Parser=${{matrix.static-parser}}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up MySQL
         run: docker run -d -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} -v $PWD/mysqldata:/var/lib/mysql/ -v $PWD/test/fixtures/custom-conf:/etc/mysql/conf.d -v $PWD/test/fixtures/ssl/certs:/certs -p ${{ env.MYSQL_PORT }}:3306 ${{ matrix.mysql-version }}
 
       - name: Set up Bun ${{ matrix.bun-version }}
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ matrix.bun-version }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
+          package-manager-cache: false
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: npm-linux-${{ hashFiles('package-lock.json') }}
@@ -106,18 +124,18 @@ jobs:
           MYSQL_PORT: ${{ env.MYSQL_PORT }}
           MYSQL_USE_COMPRESSION: ${{ matrix.use-compression }}
           MYSQL_USE_TLS: ${{ matrix.use-tls }}
-          FILTER: test-select-1|test-select-ssl
         run: bun run test:bun
-        timeout-minutes: 1
+        timeout-minutes: 10
 
-  tests-linux-deno:
+  tests-linux-deno-v2:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        deno-version: [v1.x, canary]
-        mysql-version: ['mysql:8.0.33']
+        deno-version: ['2.x']
+        mysql-version: ['mysql:8.3']
         use-compression: [0, 1]
+        static-parser: [0, 1]
         # TODO: investigate error when using SSL (1)
         #
         # errno: -4094
@@ -125,24 +143,28 @@ jobs:
         # syscall: "read"
         use-tls: [0]
 
-    name: Deno ${{ matrix.deno-version }} - DB ${{ matrix.mysql-version }} - SSL=${{matrix.use-tls}} Compression=${{matrix.use-compression}}
+    env:
+      STATIC_PARSER: ${{ matrix.static-parser }}
+
+    name: Deno ${{ matrix.deno-version }} - DB ${{ matrix.mysql-version }} - SSL=${{matrix.use-tls}} Compression=${{matrix.use-compression}} Static Parser=${{matrix.static-parser}}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up MySQL
         run: docker run -d -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} -v $PWD/mysqldata:/var/lib/mysql/ -v $PWD/test/fixtures/custom-conf:/etc/mysql/conf.d -v $PWD/test/fixtures/ssl/certs:/certs -p ${{ env.MYSQL_PORT }}:3306 ${{ matrix.mysql-version }}
 
       - name: Set up Deno ${{ matrix.deno-version }}
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
           deno-version: ${{ matrix.deno-version }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
+          package-manager-cache: false
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: npm-linux-${{ hashFiles('package-lock.json') }}
@@ -162,4 +184,4 @@ jobs:
           MYSQL_USE_COMPRESSION: ${{ matrix.use-compression }}
           MYSQL_USE_TLS: ${{ matrix.use-tls }}
         run: deno task test:deno
-        timeout-minutes: 5
+        timeout-minutes: 10
